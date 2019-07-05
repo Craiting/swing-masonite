@@ -1,0 +1,80 @@
+{% if exists('auth/base') %}
+    {% extends 'auth/base.html' %}
+{% else %}
+    {% extends 'base.html' %}
+{% endif %}
+
+{% block title %} 
+    Welcome To Swing-Shot
+{% endblock %}
+
+{% block content %}
+<div class="valign-wrapper row" id="mainHeader">
+  <div class="col s12 left-align">
+    <h5 class="left">Swing-Shot</h5>
+    <div class="right">
+      <button
+        style="background-color:#6772E5;color:#FFF;padding:8px 12px;border:0;border-radius:4px;font-size:1em;cursor:pointer;"
+        id="checkout-button-sku_FJN6D5bF6hXuaM"
+        role="link"
+      >
+        Checkout
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<div id="vidContainer">
+  <video autoplay muted loop id="myVideo">
+    <source src="/static/images/ash.mp4" type="video/mp4">
+      Sorry, this video can't play on your browser
+  </video>
+</div>
+
+<div class="custom-section blue" id="second-section">
+    <p>Hi there</p>
+    <ul>
+        <li>This</li>
+        <li>that</li>
+        <li>whatever</li>
+    </ul>
+  <div id="error-message"></div>
+</div>
+
+
+<script src="https://js.stripe.com/v3"></script>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  var stripe = Stripe('pk_test_GXM15vijwjbn2SEAqyexkT2A00lmY4Zszo');
+
+  var checkoutButton = document.getElementById('checkout-button-sku_FJN6D5bF6hXuaM');
+  checkoutButton.addEventListener('click', function () {
+    // When the customer clicks on the button, redirect
+    // them to Checkout.
+    stripe.redirectToCheckout({
+      items: [{sku: 'sku_FJN6D5bF6hXuaM', quantity: 1}],
+      // billingAddressCollection: 'required',
+      // shippingAddressCollection: 'required',
+
+      // Do not rely on the redirect to the successUrl for fulfilling
+      // purchases, customers may not always reach the success_url after
+      // a successful payment.
+      // Instead use one of the strategies described in
+      // https://stripe.com/docs/payments/checkout/fulfillment
+      successUrl: window.location.protocol + '//localhost:8000/success',
+      cancelUrl: window.location.protocol + '//localhost:8000/canceled',
+    })
+    .then(function (result) {
+      if (result.error) {
+        // If `redirectToCheckout` fails due to a browser or network
+        // error, display the localized error message to your customer.
+        var displayError = document.getElementById('error-message');
+        displayError.textContent = result.error.message;
+      }
+    });
+  });
+</script>
+{% endblock %}
