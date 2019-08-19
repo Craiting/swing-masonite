@@ -13,49 +13,103 @@
   <div class="col s12 left-align">
     <h5 class="left">Swing-Shot</h5>
     <div class="right">
-      <button
+      <a class="waves-effect waves-light btn modal-trigger" href="#modal1">Checkout</a>
+      <!-- <button
         style="background-color:#6772E5;color:#FFF;padding:8px 12px;border:0;border-radius:4px;font-size:1em;cursor:pointer;"
         id="checkout-button-sku_FJN6D5bF6hXuaM"
         role="link"
       >
         Checkout
-      </button>
+      </button> -->
     </div>
 
   </div>
 </div>
 
-<div id="vidContainer">
-  <video autoplay muted loop id="myVideo">
+<div class="" id="vidContainer">
+  <video autoplay muted loop class="" id="myVideo">
     <source src="/static/images/ash.mp4" type="video/mp4">
       Sorry, this video can't play on your browser
   </video>
 </div>
 
-<div class="custom-section blue" id="second-section">
-    <p>Hi there</p>
-    <ul>
-        <li>This</li>
-        <li>that</li>
-        <li>whatever</li>
-    </ul>
-  <div id="error-message"></div>
+<div id="main-section">
+  <div class="section flow-text" id="second-section">
+      <span>I've thrown many, many birds with this thrower and with that practice, so many different types of flight paths are easily achievable with this thrower. High arcing curves either left or right, low and fast birds that rise, straight and easy floating birds, true pairs, true triples, you name it. This thrower allows for so much more variety than other throwers, whether manual, mechanical, or fully automatic. It really is a blast to throw the birds, almost as much as shooting them!</span>
+      <p class="right" style="font-style: italic;">- Amazon Reviewer</p>
+    <div id="error-message"></div>
+  </div>
+  
+  <div class="row section-carousel">
+    <div class="carousel carousel-slider center">
+        <div class="carousel-item" href="#one!"><img src="/static/images/cropped-face.jpg"></div>
+        <div class="carousel-item" href="#two!"><img src="/static/images/swing-top-end.jpg"></div>
+        <div class="carousel-item" href="#three!"><img src="https://lorempixel.com/800/400/food/3"></div>
+        <div class="carousel-item" href="#four!"><img src="/static/images/swing-handle.jpg"></div>
+      </div>
+    <!-- <img src="/static/images/cropped-face.jpg" alt="cropped-face" /> -->
+  </div>
 </div>
 
 
-<script src="https://js.stripe.com/v3"></script>
+<!-- Modal Structure -->
+<div id="modal1" class="modal">
+  <div class="modal-content">
+    <h4>How Many?</h4>
+    <div class="row flow-text" id="order-container">
+      <div class="col s6 order-section blue">a</div>
+      <div class="col s6 order-section">
+        <h3 id="order-quantity">1</h3>
+        <button class="btn-floating btn-small waves-effect waves-light red" id="remove-quantity">
+          <i class="small material-icons">remove</i>
+        </button>
+        <button class="btn-floating btn-small waves-effect waves-light" id="add-quantity">
+          <i class="small material-icons icon-blue">add</i>
+        </button>
+      </div>
+    </div>
+    <p class="flow-text">Shipping is $6.50 per every 2 units</p>
+  </div>
+  <div class="modal-footer">
+    <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
+    <button class="btn waves-effect waves-light"
+        id="checkout-button-sku_FJN6D5bF6hXuaM"
+        role="link"
+      >
+        Checkout
+      </button>
+  </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
 <script>
+  M.AutoInit();
   var stripe = Stripe('pk_test_GXM15vijwjbn2SEAqyexkT2A00lmY4Zszo');
+  let throwerQuantity = 1;
+  $('#add-quantity').click((e) => {
+    throwerQuantity = ++throwerQuantity;
+    $('#order-quantity').text(throwerQuantity);
+  });
+  $('#remove-quantity').click((e) => {
+    throwerQuantity = Math.max(--throwerQuantity, 1);
+    $('#order-quantity').text(throwerQuantity);
+  });
+  $('.carousel.carousel-slider').carousel({
+    fullWidth: true,
+    indicators: true,
+  });
 
   var checkoutButton = document.getElementById('checkout-button-sku_FJN6D5bF6hXuaM');
   checkoutButton.addEventListener('click', function () {
     // When the customer clicks on the button, redirect
     // them to Checkout.
+
     stripe.redirectToCheckout({
-      items: [{sku: 'sku_FJN6D5bF6hXuaM', quantity: 1}],
+      items: [
+        {sku: 'sku_FJN6D5bF6hXuaM', quantity: throwerQuantity},
+        {sku: 'sku_FNfnDXhrK8XgY8', quantity: Math.ceil(throwerQuantity/2)}
+        ],
       // billingAddressCollection: 'required',
       // shippingAddressCollection: 'required',
 
